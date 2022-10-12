@@ -16,12 +16,12 @@ var lblTitle, lblResult, lblScore *widget.Label
 var imgDisplayed *canvas.Image
 var imgContainer *fyne.Container
 var winMainwindow fyne.Window
-var btnAntwoorden [4]*widget.Button = [4]*widget.Button{nil, nil, nil, nil}
+var btnAnswers [4]*widget.Button = [4]*widget.Button{nil, nil, nil, nil}
 var btnQuit, btnScoreReset *widget.Button
 
-var correctAnswer = 0 // register the correct answer so it can be compared to the user answer
-var totaalScore = 0   // keeps track of the score
-var aantalOpgaven = 0 // keeps track of the total test questions asked
+var correctAnswer = 0  // register the correct answer so it can be compared to the user answer
+var totalScore = 0     // keeps track of the score
+var totalQuestions = 0 // keeps track of the total test questions asked
 
 // remove an element of a slice
 func remove(slice []string, s int) []string {
@@ -42,8 +42,8 @@ func randomize_answers(s string) {
 	rand.Shuffle(len(tmp), func(i, j int) { tmp[i], tmp[j] = tmp[j], tmp[i] })
 
 	for i := 0; i < 4; i++ {
-		btnAntwoorden[i].Text = tmp[i]
-		btnAntwoorden[i].Refresh()
+		btnAnswers[i].Text = tmp[i]
+		btnAnswers[i].Refresh()
 		if tmp[i] == s {
 			correctAnswer = i
 		}
@@ -78,29 +78,29 @@ func genereerOpgave() {
 
 func setScore(n int) {
 	if n == 0 {
-		totaalScore = 0
-		aantalOpgaven = 0
+		totalScore = 0
+		totalQuestions = 0
 	}
 
-	lblScore.Text = fmt.Sprintf("%d / %d", totaalScore, aantalOpgaven)
+	lblScore.Text = fmt.Sprintf("%d / %d", totalScore, totalQuestions)
 	lblScore.Refresh()
 }
 
 func checkAntwoord(n int) {
 
 	if n == correctAnswer {
-		lblResult.Text = "Correct, dit is een " + btnAntwoorden[n].Text
+		lblResult.Text = "Correct, dit is een " + btnAnswers[n].Text
 		lblResult.Refresh()
-		totaalScore = totaalScore + 1
+		totalScore = totalScore + 1
 
 		time.Sleep(2 * time.Second)
 	} else {
-		lblResult.Text = "Fout, dit is geen " + btnAntwoorden[n].Text + " maar een " + btnAntwoorden[correctAnswer].Text
+		lblResult.Text = "Fout, dit is geen " + btnAnswers[n].Text + " maar een " + btnAnswers[correctAnswer].Text
 		lblResult.Refresh()
 		time.Sleep(5 * time.Second)
 	}
-	aantalOpgaven = aantalOpgaven + 1
-	setScore(totaalScore)
+	totalQuestions = totalQuestions + 1
+	setScore(totalScore)
 	lblResult.Text = ""
 	lblResult.Refresh()
 
@@ -128,12 +128,12 @@ func main() {
 	lblResult = widget.NewLabel(" ")
 	lblResult.Alignment = fyne.TextAlignCenter
 
-	btnAntwoorden[0] = widget.NewButton("--", func() { checkAntwoord(0) })
-	btnAntwoorden[1] = widget.NewButton("--", func() { checkAntwoord(1) })
-	btnAntwoorden[2] = widget.NewButton("--", func() { checkAntwoord(2) })
-	btnAntwoorden[3] = widget.NewButton("--", func() { checkAntwoord(3) })
+	btnAnswers[0] = widget.NewButton("--", func() { checkAntwoord(0) })
+	btnAnswers[1] = widget.NewButton("--", func() { checkAntwoord(1) })
+	btnAnswers[2] = widget.NewButton("--", func() { checkAntwoord(2) })
+	btnAnswers[3] = widget.NewButton("--", func() { checkAntwoord(3) })
 
-	cntAnswers := container.NewGridWithColumns(4, btnAntwoorden[0], btnAntwoorden[1], btnAntwoorden[2], btnAntwoorden[3])
+	cntAnswers := container.NewGridWithColumns(4, btnAnswers[0], btnAnswers[1], btnAnswers[2], btnAnswers[3])
 	cntScore := container.NewGridWithColumns(2, lblScore, btnScoreReset)
 	btnQuit = widget.NewButton("Einde", func() { application.Quit() })
 
