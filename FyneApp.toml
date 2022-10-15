@@ -1,0 +1,8 @@
+Website = "https://example.com"
+
+[Details]
+  Icon = "Icon.png"
+  Name = "Roofvogels Herkennen"
+  ID = "com.example.waarnemingen.be"
+  Version = "1.0.0"
+  Build = 2

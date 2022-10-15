@@ -15,7 +15,7 @@ import (
 var lblTitle, lblResult, lblScore *widget.Label
 var imgDisplayed *canvas.Image
 var imgContainer *fyne.Container
-var winMainwindow fyne.Window
+var winMain fyne.Window
 var btnAnswers [4]*widget.Button = [4]*widget.Button{nil, nil, nil, nil}
 var btnQuit, btnScoreReset *widget.Button
 
@@ -59,7 +59,7 @@ func genereerOpgave() {
 	opg := get_random_image()
 	r, _ := fyne.LoadResourceFromURLString("https://www.waarnemingen.be/media/photo/" + quizInfo[opg][0])
 	imgDisplayed = canvas.NewImageFromResource(r)
-	imgDisplayed.SetMinSize(fyne.NewSize(1024, 768))
+	imgDisplayed.SetMinSize(fyne.NewSize(640, 480))
 	imgDisplayed.FillMode = canvas.ImageFillContain
 	imgContainer.Objects[0] = imgDisplayed
 	randomize_answers(quizInfo[opg][1])
@@ -111,11 +111,7 @@ func main() {
 	application := app.New()
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	W := 800
-	H := 600
-
-	winMainwindow = application.NewWindow("Waarnemingen.be Quiz")
-	winMainwindow.Resize(fyne.NewSize(W, H))
+	winMain = application.NewWindow("Waarnemingen.be Quiz")
 
 	lblTitle = widget.NewLabel(vraag)
 	lblTitle.Alignment = fyne.TextAlignCenter
@@ -140,27 +136,31 @@ func main() {
 	startupImg := get_random_image()
 	r, _ := fyne.LoadResourceFromURLString("https://www.waarnemingen.be/media/photo/" + quizInfo[startupImg][0])
 	imgDisplayed = canvas.NewImageFromResource(r)
-	imgDisplayed.SetMinSize(fyne.NewSize(800, 600))
+	imgDisplayed.SetMinSize(fyne.NewSize(320, 240))
 	imgDisplayed.FillMode = canvas.ImageFillContain
 	imgContainer = container.NewGridWithColumns(1, imgDisplayed)
 
-	winMainwindow.SetContent(
-		container.NewVBox(
-			canvas.NewLine(color.Black),
-			lblTitle,
-			cntScore,
-			canvas.NewLine(color.Black),
-			imgContainer,
-			canvas.NewLine(color.Black),
-			cntAnswers,
-			canvas.NewLine(color.Black),
-			lblResult,
-			canvas.NewLine(color.Black),
-			btnQuit))
+	top := container.NewVBox(
+		canvas.NewLine(color.Black),
+		lblTitle,
+		cntScore,
+		canvas.NewLine(color.Black))
+
+	bottom := container.NewVBox(
+		canvas.NewLine(color.Black),
+		cntAnswers,
+		canvas.NewLine(color.Black),
+		lblResult,
+		canvas.NewLine(color.Black),
+		btnQuit)
+
+	content := container.NewBorder(top, bottom, nil, nil, imgDisplayed)
+
+	winMain.SetContent(content)
 
 	genereerOpgave()
 
-	winMainwindow.ShowAndRun()
+	winMain.ShowAndRun()
 }
 
 ///  QUIZ DATA ///
