@@ -89,19 +89,19 @@ func setScore(n int) {
 func checkAntwoord(n int) {
 
 	if n == correctAnswer {
-		lblResult.Text = "Correct, dit is een " + btnAnswers[n].Text
+		lblResult.Text = "Correct, dit is een " + btnAnswers[n].Text + "\n "
 		lblResult.Refresh()
 		totalScore = totalScore + 1
 
 		time.Sleep(2 * time.Second)
 	} else {
-		lblResult.Text = "Fout, dit is geen " + btnAnswers[n].Text + " maar een " + btnAnswers[correctAnswer].Text
+		lblResult.Text = "Fout, dit is geen " + btnAnswers[n].Text + " maar een " + btnAnswers[correctAnswer].Text + "\n "
 		lblResult.Refresh()
 		time.Sleep(5 * time.Second)
 	}
 	totalQuestions = totalQuestions + 1
 	setScore(totalScore)
-	lblResult.Text = ""
+	lblResult.Text = " \n "
 	lblResult.Refresh()
 
 	genereerOpgave()
@@ -140,6 +140,7 @@ func main() {
 	imgDisplayed.FillMode = canvas.ImageFillContain
 	imgContainer = container.NewGridWithColumns(1, imgDisplayed)
 
+	lblEmpty := widget.NewLabel("")
 	top := container.NewVBox(
 		canvas.NewLine(color.Black),
 		lblTitle,
@@ -152,7 +153,7 @@ func main() {
 		canvas.NewLine(color.Black),
 		lblResult,
 		canvas.NewLine(color.Black),
-		btnQuit)
+		container.NewGridWithColumns(3, lblEmpty, btnQuit, lblEmpty))
 
 	content := container.NewBorder(top, bottom, nil, nil, imgContainer)
 
