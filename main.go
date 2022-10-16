@@ -154,7 +154,7 @@ func main() {
 		canvas.NewLine(color.Black),
 		btnQuit)
 
-	content := container.NewBorder(top, bottom, nil, nil, imgDisplayed)
+	content := container.NewBorder(top, bottom, nil, nil, imgContainer)
 
 	winMain.SetContent(content)
 
