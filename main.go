@@ -16,10 +16,10 @@ var lblTitle, lblResult, lblScore *widget.Label
 var imgDisplayed *canvas.Image
 var imgContainer *fyne.Container
 var winMain fyne.Window
-var btnAnswers [4]*widget.Button = [4]*widget.Button{nil, nil, nil, nil}
+var btnAnswers = [4]*widget.Button{nil, nil, nil, nil}
 var btnQuit, btnScoreReset *widget.Button
 
-var correctAnswer = 0  // register the correct answer so it can be compared to the user answer
+var correctAnswer = 0  // register the correct answer, so it can be compared to the user answer
 var totalScore = 0     // keeps track of the score
 var totalQuestions = 0 // keeps track of the total test questions asked
 
@@ -29,9 +29,9 @@ func remove(slice []string, s int) []string {
 }
 
 // randomize the answers so that they do not appear in the same order every time
-func randomize_answers(s string) {
+func randomizeAnswers(s string) {
 
-	var tmp []string = getAnswerAfinityGroup(s)
+	var tmp = getAnswerAfinityGroup(s)
 	for len(tmp) > 4 {
 		idx := rand.Intn(len(tmp))
 		if tmp[idx] != s {
@@ -50,19 +50,14 @@ func randomize_answers(s string) {
 	}
 }
 
-// get a random question from the list
-func get_random_image() int {
-	return rand.Intn(len(quizInfo))
-}
-
-func genereerOpgave() {
-	opg := get_random_image()
+func generateQuestion() {
+	opg := rand.Intn(len(quizInfo))
 	r, _ := fyne.LoadResourceFromURLString("https://www.waarnemingen.be/media/photo/" + quizInfo[opg][0])
 	imgDisplayed = canvas.NewImageFromResource(r)
 	imgDisplayed.SetMinSize(fyne.NewSize(640, 480))
 	imgDisplayed.FillMode = canvas.ImageFillContain
 	imgContainer.Objects[0] = imgDisplayed
-	randomize_answers(quizInfo[opg][1])
+	randomizeAnswers(quizInfo[opg][1])
 	obs := quizInfo[opg][3]
 	if obs == "" {
 		obs = "Onbekend"
@@ -74,6 +69,7 @@ func genereerOpgave() {
 		observation = "https://www.waarnemingen.be/observation/" + observation
 	}
 	lblResult.Text = obs + "\n" + observation
+	lblResult.Refresh()
 }
 
 func setScore(n int) {
@@ -86,7 +82,7 @@ func setScore(n int) {
 	lblScore.Refresh()
 }
 
-func checkAntwoord(n int) {
+func checkAnswer(n int) {
 
 	if n == correctAnswer {
 		lblResult.Text = "Correct, dit is een " + btnAnswers[n].Text + "\n "
@@ -104,7 +100,7 @@ func checkAntwoord(n int) {
 	lblResult.Text = " \n "
 	lblResult.Refresh()
 
-	genereerOpgave()
+	generateQuestion()
 }
 
 func main() {
@@ -124,16 +120,16 @@ func main() {
 	lblResult = widget.NewLabel(" ")
 	lblResult.Alignment = fyne.TextAlignCenter
 
-	btnAnswers[0] = widget.NewButton("--", func() { checkAntwoord(0) })
-	btnAnswers[1] = widget.NewButton("--", func() { checkAntwoord(1) })
-	btnAnswers[2] = widget.NewButton("--", func() { checkAntwoord(2) })
-	btnAnswers[3] = widget.NewButton("--", func() { checkAntwoord(3) })
+	btnAnswers[0] = widget.NewButton("--", func() { checkAnswer(0) })
+	btnAnswers[1] = widget.NewButton("--", func() { checkAnswer(1) })
+	btnAnswers[2] = widget.NewButton("--", func() { checkAnswer(2) })
+	btnAnswers[3] = widget.NewButton("--", func() { checkAnswer(3) })
 
 	cntAnswers := container.NewGridWithColumns(4, btnAnswers[0], btnAnswers[1], btnAnswers[2], btnAnswers[3])
 	cntScore := container.NewGridWithColumns(2, lblScore, btnScoreReset)
 	btnQuit = widget.NewButton("Einde", func() { application.Quit() })
 
-	startupImg := get_random_image()
+	startupImg := rand.Intn(len(quizInfo))
 	r, _ := fyne.LoadResourceFromURLString("https://www.waarnemingen.be/media/photo/" + quizInfo[startupImg][0])
 	imgDisplayed = canvas.NewImageFromResource(r)
 	imgDisplayed.SetMinSize(fyne.NewSize(320, 240))
@@ -159,7 +155,7 @@ func main() {
 
 	winMain.SetContent(content)
 
-	genereerOpgave()
+	generateQuestion()
 
 	winMain.ShowAndRun()
 }
